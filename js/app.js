@@ -515,6 +515,9 @@
     html.push('  <div class="eintrag__inhalt">');
     html.push('    <div class="badges">' + badgeStatus(wort) + badgeRegister(wort) + badgeNiveau(wort) + (wort.eigen ? '<span class="badge">Eigenes Wort</span>' : '') + (favorit ? '<span class="badge badge--voll">Favorit</span>' : '') + '</div>');
     html.push('    <p class="bedeutung">' + esc(wort.bedeutung) + '</p>');
+    if (wort.erklaerung) {
+      html.push('    <div class="erklaerung"><h3 class="erklaerung__titel">Erklärung</h3><p>' + esc(wort.erklaerung) + '</p></div>');
+    }
     (wort.beispiele || []).forEach(function (satz) {
       html.push('    <blockquote class="beispielsatz">' + esc(satz) + '</blockquote>');
     });
@@ -584,7 +587,7 @@
   function ansichtStart() {
     var tagesSatz = faelligeWoerter().length
       ? faelligeWoerter().length + ' Wiederholungen sind fällig.'
-      : (neueWoerter().length ? 'Keine Wiederholung fällig – ' + neueWoerter().length + ' neue Wörter warten.' : 'Alle Wörter sind wiederholt. Bereit für neue?')
+      : (neueWoerter().length ? 'Keine Wiederholung fällig, ' + neueWoerter().length + ' neue Wörter warten.' : 'Alle Wörter sind wiederholt. Bereit für neue?')
     ;
     var alle = alleWoerter();
     var gelernt = gelerntAnzahl();
@@ -684,7 +687,7 @@
       var neu = neueWoerter().length;
       var ziel = STORE.einstellungen().ziel || 12;
       h.push('<section class="abschnitt"><p class="eyebrow">Lernen</p><h1>Eine Sitzung,<br>' + ziel + ' Wörter.</h1>');
-      h.push('  <p class="lead">Du siehst zuerst nur das Wort. Danach entscheidest du, wie sicher du bist – daraus ergibt sich der nächste Termin für die Wiederholung.</p>');
+      h.push('  <p class="lead">Du siehst zuerst nur das Wort. Danach entscheidest du, wie sicher du bist, daraus ergibt sich der nächste Termin für die Wiederholung.</p>');
       h.push('  <div class="zahlen" style="margin-top:20px">');
       h.push('    <div class="zahl"><b>' + faellig + '</b><span>fällige Wiederholungen</span></div>');
       h.push('    <div class="zahl"><b>' + neu + '</b><span>neue Wörter</span></div>');
@@ -737,6 +740,9 @@
     } else {
       h.push('  <div class="stack aufdecken" style="margin-top:18px">');
       h.push('    <p class="bedeutung">' + esc(wort.bedeutung) + '</p>');
+      if (wort.erklaerung) {
+        h.push('    <div class="erklaerung"><h3 class="erklaerung__titel">Erklärung</h3><p>' + esc(wort.erklaerung) + '</p></div>');
+      }
       (wort.beispiele || []).forEach(function (satz) {
         h.push('    <blockquote class="beispielsatz">' + esc(satz) + '</blockquote>');
       });
@@ -1112,7 +1118,7 @@
   }
 
   function fussnote() {
-    return '<p class="fussnote">Wortschatz — Die vergessenen Wörter. Bedeutungen, Beispiele und Registerangaben sind redaktionell geprüft und beschreiben den heutigen Sprachgebrauch. Lernstand, Favoriten und eigene Wörter bleiben ausschließlich in diesem Browser. Nach dem ersten Aufruf über HTTPS lässt sich die Seite installieren und offline nutzen.</p>';
+    return '<p class="fussnote">made by DahMaus <3</p>';
   }
 
   /* ---------- Rendern ---------- */

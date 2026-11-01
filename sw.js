@@ -2,7 +2,7 @@
    Speichert die App-Dateien beim ersten Besuch und liefert sie danach offline aus.
    Bei Änderungen an den Dateien die Version im Cache-Namen erhöhen. */
 
-var CACHE = 'wortschatz-v1';
+var CACHE = 'wortschatz-v2';
 
 var ASSETS = [
   './',

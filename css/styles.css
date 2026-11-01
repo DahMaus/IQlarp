@@ -507,6 +507,28 @@ main {
 
 .bedeutung { font-size: 1rem; }
 
+.erklaerung {
+  border-left: 2px solid var(--linie-2);
+  padding-left: 13px;
+}
+
+.erklaerung__titel {
+  margin: 0 0 4px;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tinte-2);
+}
+
+.erklaerung p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--tinte-2);
+  overflow-wrap: anywhere;
+}
+
 .hinweis-box {
   border: 1px dashed var(--linie-2);
   border-radius: var(--radius);

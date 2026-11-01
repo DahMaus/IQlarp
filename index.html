@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Wortschatz — Die vergessenen Wörter</title>
+  <meta name="description" content="Gehobenen, präzisen und seltenen deutschen Wortschatz lernen: Karteikarten, Quiz, Wörterbuch und Übungen zum aktiven Ersetzen gewöhnlicher Ausdrücke.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#fbfbf9">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23101010'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='18' fill='%23fbfbf9' text-anchor='middle'%3EW%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/styles.css">
+  <script>
+    try {
+      var gespeichert = JSON.parse(localStorage.getItem('wortschatz.v1') || 'null');
+      if (gespeichert && gespeichert.einstellungen && gespeichert.einstellungen.theme) {
+        document.documentElement.setAttribute('data-theme', gespeichert.einstellungen.theme);
+      }
+    } catch (e) { /* localStorage nicht verfügbar */ }
+  </script>
+</head>
+<body>
+  <a class="sprungmarke" href="#haupt">Zum Inhalt springen</a>
+
+  <header class="kopf">
+    <a class="marke" href="#/start" aria-label="Wortschatz — zur Startseite">
+      <span class="marke__titel">Wortschatz</span>
+      <span class="marke__untertitel">Die vergessenen Wörter</span>
+    </a>
+    <button class="themenschalter" type="button" data-action="theme" aria-pressed="false" title="Erscheinungsbild wechseln">
+      <span class="themenschalter__text">Dunkel</span>
+      <span class="themenschalter__symbol" aria-hidden="true">◐</span>
+    </button>
+  </header>
+
+  <main id="haupt" tabindex="-1"></main>
+
+  <nav class="tabbar" aria-label="Hauptnavigation">
+    <a href="#/start" data-route="start"><span>Start</span></a>
+    <a href="#/lernen" data-route="lernen"><span>Lernen</span></a>
+    <a href="#/quiz" data-route="quiz"><span>Quiz</span></a>
+    <a href="#/woerterbuch" data-route="woerterbuch"><span>Wörter</span></a>
+    <a href="#/sammlung" data-route="sammlung"><span>Sammlung</span></a>
+  </nav>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -19,6 +19,7 @@
   var quiz = null;
   var aktivUebung = null;
   var offeneEintraege = {};
+  var installPrompt = null;
 
   var suche = {
     text: '',
@@ -553,6 +554,24 @@
     return html.join('\n');
   }
 
+  function istInstalliert() {
+    if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) return true;
+    return window.navigator.standalone === true;
+  }
+
+  function offlineStatusText() {
+    if (istInstalliert()) {
+      return 'Als App installiert. Alle Wörter und dein Lernstand bleiben auch ohne Netz verfügbar.';
+    }
+    if (location.protocol === 'file:') {
+      return 'Offline-Speicherung ist nur über HTTPS oder localhost möglich, nicht beim direkten Öffnen der Datei.';
+    }
+    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+      return 'Offline verfügbar: Die Seite wurde auf diesem Gerät gespeichert und funktioniert ohne Netz.';
+    }
+    return 'Beim nächsten Aufruf wird die Seite automatisch für den Offline-Betrieb gespeichert.';
+  }
+
   function datumLesbar(iso) {
     if (!iso || typeof iso !== 'string') return '';
     var teile = iso.split('-');
@@ -1078,11 +1097,22 @@
     h.push('    <button class="btn btn--zweit btn--klein" type="button" data-action="reset">Lernfortschritt zurücksetzen</button>');
     h.push('  </div>');
     h.push('</section>');
+
+    h.push('<section class="abschnitt">');
+    h.push('  <div class="abschnitt-kopf"><h2>Offline & Installation</h2></div>');
+    h.push('  <div class="karte stack">');
+    h.push('    <p class="klein">' + esc(offlineStatusText()) + '</p>');
+    if (installPrompt) {
+      h.push('    <button class="btn btn--zweit btn--klein" type="button" data-action="installieren">App installieren</button>');
+    }
+    h.push('    <p class="klein muted">Chrome und Edge bieten nach dem ersten Besuch ein Installationssymbol in der Adressleiste an. Voraussetzung ist HTTPS oder localhost, etwa über GitHub Pages.</p>');
+    h.push('  </div>');
+    h.push('</section>');
     return h.join('\n');
   }
 
   function fussnote() {
-    return '<p class="fussnote">Wortschatz — Die vergessenen Wörter. Bedeutungen, Beispiele und Registerangaben sind redaktionell geprüft und beschreiben den heutigen Sprachgebrauch. Lernstand, Favoriten und eigene Wörter bleiben ausschließlich in diesem Browser.</p>';
+    return '<p class="fussnote">Wortschatz — Die vergessenen Wörter. Bedeutungen, Beispiele und Registerangaben sind redaktionell geprüft und beschreiben den heutigen Sprachgebrauch. Lernstand, Favoriten und eigene Wörter bleiben ausschließlich in diesem Browser. Nach dem ersten Aufruf über HTTPS lässt sich die Seite installieren und offline nutzen.</p>';
   }
 
   /* ---------- Rendern ---------- */
@@ -1271,6 +1301,21 @@
         zeigeToast('Beispielsatz entfernt');
         rendern({ scroll: false });
         break;
+      case 'installieren':
+        if (installPrompt) {
+          var prompt = installPrompt;
+          installPrompt = null;
+          if (prompt.prompt) prompt.prompt();
+          if (prompt.userChoice && prompt.userChoice.then) {
+            prompt.userChoice.then(function (wahl) {
+              zeigeToast(wahl && wahl.outcome === 'accepted' ? 'App wird installiert' : 'Installation abgebrochen');
+              if (route() === 'sammlung') rendern({ scroll: false });
+            });
+          }
+        } else {
+          zeigeToast('Nutzung über das Installationssymbol in der Adressleiste');
+        }
+        break;
       case 'reset':
         if (window.confirm('Lernfortschritt, Tagesstatistik und Quiz-Ergebnisse zurücksetzen? Favoriten und eigene Wörter bleiben erhalten.')) {
           STORE.resetFortschritt();
@@ -1379,6 +1424,24 @@
   window.addEventListener('hashchange', function () {
     rendern({ scroll: true, fokus: true });
   });
+
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    installPrompt = e;
+    if (route() === 'sammlung') rendern({ scroll: false });
+  });
+
+  window.addEventListener('appinstalled', function () {
+    installPrompt = null;
+    zeigeToast('App installiert');
+    if (route() === 'sammlung') rendern({ scroll: false });
+  });
+
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').catch(function () { /* offline nicht kritisch */ });
+    });
+  }
 
   /* ---------- Start ---------- */
 
